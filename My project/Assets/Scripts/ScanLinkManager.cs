@@ -103,29 +103,19 @@ public class ScanLinkManager : MonoBehaviour
     }
     void UpdateCameraView()
     {
-        if (webcam == null || !webcam.isPlaying) return;
-        ////////////////
-        int rotation = webcam.videoRotationAngle;
-        Debug.Log("===== CAMERA DEBUG =====");
-        Debug.Log("Platform: " + Application.platform);
-        Debug.Log("Device: " + SystemInfo.deviceModel);
-        Debug.Log("Camera name: " + webcam.deviceName);
-        Debug.Log("Rotation angle: " + rotation);
-        Debug.Log("Vertically mirrored: " + webcam.videoVerticallyMirrored);
-        Debug.Log($"Resolution: {webcam.width} x {webcam.height}");
-#if UNITY_IOS
-         Debug.Log("Running on iOS (BACK CAMERA)");
-    cameraView.rectTransform.localEulerAngles = new Vector3(0, 0, rotation);
+        if (webcam == null || !webcam.isPlaying)
+            return;
 
-#elif UNITY_ANDROID
-        Debug.Log("Running on Android (BACK CAMERA)");
-        cameraView.rectTransform.localEulerAngles = new Vector3(0, 0, -rotation);
+        cameraView.rectTransform.localEulerAngles =
+            new Vector3(0, 0, -webcam.videoRotationAngle);
 
-#endif
-        cameraView.rectTransform.localScale = Vector3.one;
-        float ratio = (float)webcam.width / webcam.height;
-        ratioFitter.aspectRatio = ratio;
+        cameraView.rectTransform.localScale =
+            new Vector3(1, webcam.videoVerticallyMirrored ? -1 : 1, 1);
+
+        ratioFitter.aspectRatio =
+            (float)webcam.width / webcam.height;
     }
+
     public void ReturnCam()
     {
         visiblescanQR();
